@@ -68,8 +68,6 @@ exports.signup = async function(req, res, next){
     });
 
   } catch(err){
-    console.log("asdf");
-
     // if a validation fails!
     if(err.code === 11000){
       err.message = "Sorry, that username and/or email is taken.";
