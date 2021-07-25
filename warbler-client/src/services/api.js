@@ -1,10 +1,11 @@
 import axios from "axios";
 
+// attaches token to any request when the user logs in
 export function setHeaderTokens(token){
   if(token){
-    axios.defaults.header.common["Authorization"] = `Bearer ${token}`;
+    axios.defaults.headers.common["Authorization"] = `Bearer ${token}`; // when user is logs in, attach token to all future reqs so that the server looks who we are & logged in
   } else {
-    delete axios.defaults.headers.common["Authorization"]; 
+    delete axios.defaults.headers.common["Authorization"];  // when the user logs out, remove the token
   }
 }
 
@@ -18,12 +19,12 @@ export function setHeaderTokens(token){
 export function apiCall(method, path, data){
   return new Promise((resolve, reject) => {
     // make an axios req, it will return a func that we will invoke with path & data, return the res from that func
-    return axios[method](path, data)
+    return axios[method.toLowerCase()](path, data)
       .then(res => {
-        return resolve(res.data)
+        return resolve(res.data);
       })
       .catch(err => {
-        return reject(err.response.data.error)
+        return reject(err.response.data.error);
       });
   });
 }

@@ -20,14 +20,23 @@ class AuthForm extends Component {
   handleSubmit = e => {
     e.preventDefault();   // so the page doesn't refresh
     const authType = this.props.signUp ? "signup" : "signin";
-    this.props.onAuth(authType, this.state).then(() => {
-      console.log("LOGGED IN SUCCESSFULLY");
-    });
+    this.props
+      .onAuth(authType, this.state)
+      .then(() => {
+        this.props.history.push("/");   // redirect to home page 
+      })
+      .catch(() => {
+        return;
+      });
   }
 
   render(){
     const { email, username, password, profileImageUrl } = this.state;
-    const { heading, buttonText, signUp } = this.props;
+    const { heading, buttonText, signUp, errors, removeError, history } = this.props;
+
+    history.listen(() => {
+      removeError();  // listen for any change in the route and if so, remove any errors
+    });
 
     return(
       <div>
@@ -35,6 +44,12 @@ class AuthForm extends Component {
           <div className="col-md-6">
             <form onSubmit={this.handleSubmit}>
               <h2> {heading} </h2>
+
+              {errors.message && (
+                <div className="alert alert-danger">
+                  {errors.message}
+                </div>
+              )}
 
               <label htmlFor="email"> Email: </label>
               <input
@@ -57,7 +72,6 @@ class AuthForm extends Component {
                 type="password"
                 value={password}
               />
-
 
               {/* Display if signup */}
               {signUp && (
@@ -97,4 +111,4 @@ class AuthForm extends Component {
   }
 }
 
-export default AuthForm; 
+export default AuthForm;

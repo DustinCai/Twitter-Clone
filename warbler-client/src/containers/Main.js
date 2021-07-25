@@ -4,21 +4,31 @@ import { connect } from "react-redux";
 import Homepage from "../components/Homepage";
 import AuthForm from "../components/AuthForm";
 import { authUser } from "../store/actions/auth";
+import { removeError } from "../store/actions/errors";
+import withAuth from "../hocs/withAuth";
+import MessageForm from "../containers/MessageForm"; 
 
 const Main = props => {
-  const { authUser } = props;
+  const { authUser, errors, removeError, currentUser } = props;
 
   return (
     <div className="container">
       <Switch>
-        <Route exact path="/" render={props => <Homepage {...props}/>} />
+        <Route
+          exact
+          path="/"
+          render={props => <Homepage currentUser={currentUser} {...props}/>}
+        />
+
         <Route
           exact
           path="/signin"
           render={props => {
           return(
               <AuthForm
+                errors={errors}
                 onAuth={authUser}
+                removeError={removeError}
                 buttonText="Log in"
                 heading="Welcome Back"
                 {...props}
@@ -26,13 +36,16 @@ const Main = props => {
             );
           }}
         />
+
         <Route
           exact
           path="/signup"
           render={props => {
             return(
               <AuthForm
+                errors={errors}
                 onAuth={authUser}
+                removeError={removeError}
                 signUp
                 buttonText="Sign me up!"
                 heading="Join Warbler today."
@@ -41,6 +54,12 @@ const Main = props => {
             );
           }}
         />
+
+        <Route
+          path="/users/:id/messages/new"
+          component={withAuth(MessageForm)}
+        />
+
       </Switch>
     </div>
   );
@@ -48,9 +67,9 @@ const Main = props => {
 
 function mapStateToProps(state){
   return {
-    currentUser: state.currentUser
-    //errors: state.errors
+    currentUser: state.currentUser,
+    errors: state.errors
   };
 }
 
-export default withRouter(connect(mapStateToProps, { authUser })(Main));
+export default withRouter(connect(mapStateToProps, { authUser, removeError })(Main));
