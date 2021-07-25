@@ -4,7 +4,7 @@ mongoose.Promise = Promise;  // Promise library
 
 // Connect to our database
 //mongoose.connect('mongodb://127.0.0.1:27017/warbler', {
-mongoose.connect('mongodb://localhost/warbler', {
+mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost/warbler', {
   keepAlive: true,
 });
 
